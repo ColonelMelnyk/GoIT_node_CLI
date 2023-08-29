@@ -5,29 +5,31 @@
 // const sec = currentTime.getSeconds();
 // console.log(`Current time: ${hrs}:${min}:${sec}`);
 // console.log('And here I start my journey!')
-
-const argv = require('yargs').argv;
-
-// TODO: рефакторити
-function invokeAction({ action, id, name, email, phone }) {
+const contacts = require("./db/contacts");
+const yargs = require("yargs");
+const {hideBin} = require("yargs/helpers");
+const invokeAction = async({ action, id, name, email, phone }) => {
   switch (action) {
     case 'list':
-      // ...
-      break;
-
+        const list = await contacts.listContacts();
+        console.log(list);
+        break;
     case 'get':
-      // ... id
-      break;
-
+      const getContacts = await contacts.getContactById(id);
+        console.log(getContacts);
+        break;
     case 'add':
-      // ... name email phone
+      const addContact = await contacts.addContact(name, email, phone);
+      console.log(addContact);
       break;
-
     case 'remove':
-      // ... id
-      break;
-
+        const delContact = await contacts.removeContact(id);
+        console.log(delContact);
+        break;
     default:
       console.warn('\x1B[31m Unknown action type!');
   }
 }
+const array = hideBin(process.argv);
+const {argv} = yargs(array);
+invokeAction(argv);
